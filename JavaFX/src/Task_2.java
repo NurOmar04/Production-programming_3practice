@@ -6,14 +6,10 @@ public class Task_2 {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            // Загружаем драйвер
             Class.forName("org.sqlite.JDBC");
-
-            // Подключаемся к БД (если файла books.db нет, он создастся автоматически)
             Connection conn = DriverManager.getConnection("jdbc:sqlite:books.db");
             Statement stmt = conn.createStatement();
 
-            // Создаём таблицу (если ещё не создана)
             stmt.execute("CREATE TABLE IF NOT EXISTS books (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "title TEXT NOT NULL, " +
@@ -33,14 +29,14 @@ public class Task_2 {
                 System.out.print("Выберите пункт: ");
 
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // очистка буфера
+                scanner.nextLine();
 
                 if (choice == 0) {
                     break;
                 }
 
                 switch (choice) {
-                    case 1: // Добавить книгу
+                    case 1:
                         System.out.print("Введите название: ");
                         String title = scanner.nextLine();
                         System.out.print("Введите автора: ");
@@ -57,19 +53,19 @@ public class Task_2 {
                         System.out.println("Книга добавлена.");
                         break;
 
-                    case 2: // Удалить последнюю книгу
+                    case 2:
                         stmt.executeUpdate("DELETE FROM books WHERE id = (SELECT MAX(id) FROM books)");
                         System.out.println("Последняя книга удалена.");
                         break;
 
-                    case 3: // Изменить автора первой книги
+                    case 3:
                         System.out.print("Введите нового автора: ");
                         String newAuthor = scanner.nextLine();
                         stmt.executeUpdate("UPDATE books SET author='" + newAuthor + "' WHERE id=(SELECT MIN(id) FROM books)");
                         System.out.println("Автор первой книги изменён.");
                         break;
 
-                    case 4: // Фильтр + сортировка
+                    case 4:
                         System.out.print("Введите автора для фильтра: ");
                         String filterAuthor = scanner.nextLine();
                         System.out.print("Введите год для фильтра: ");
@@ -97,11 +93,11 @@ public class Task_2 {
                         }
                         break;
 
-                    case 5: // Показать все книги
+                    case 5:
                         printBooks(conn);
                         break;
 
-                    case 6: // Удалить книгу по ID
+                    case 6:
                         printBooks(conn);
                         System.out.print("Введите ID книги для удаления: ");
                         int delId = scanner.nextInt();
@@ -113,7 +109,7 @@ public class Task_2 {
                         }
                         break;
 
-                    case 7: // Очистить таблицу
+                    case 7:
                         stmt.executeUpdate("DELETE FROM books");
                         System.out.println("Все книги удалены.");
                         break;
@@ -129,7 +125,6 @@ public class Task_2 {
         }
     }
 
-    // Метод для вывода всех книг
     public static void printBooks(Connection conn) throws SQLException {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM books");
